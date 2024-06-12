@@ -29,6 +29,9 @@ public class User implements UserDetails {
     private LocalDate birthday;
     @Enumerated(EnumType.STRING)
     private Roles role;
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
