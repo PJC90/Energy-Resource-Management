@@ -1,5 +1,6 @@
 package dashboard.energy.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dashboard.energy.entities.enums.Roles;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -16,6 +17,8 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
+@JsonIgnoreProperties({"authorities", "accountNonExpired", "enabled",
+        "accountNonLocked", "credentialsNonExpired","company"})
 public class User implements UserDetails {
     @Id
     @GeneratedValue

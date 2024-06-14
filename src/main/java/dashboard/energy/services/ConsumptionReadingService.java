@@ -40,8 +40,8 @@ public class ConsumptionReadingService {
             generateReading(device);
         }
     }
-    @Scheduled(fixedRate = 60000) // Metodo pianificato che viene eseguito ogni 60 secondi generando automaticamente una nuova lettura del dispositivo.
-    public void generateAutomaticallyReadings() {
-        generateReadingAllDevice();
-    }
+//    @Scheduled(fixedRate = 60000) // Metodo pianificato che viene eseguito ogni 60 secondi generando automaticamente una nuova lettura del dispositivo.
+//    public void generateAutomaticallyReadings() {
+//        generateReadingAllDevice();
+//    }
 }
