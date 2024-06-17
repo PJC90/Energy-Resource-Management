@@ -33,8 +33,8 @@ public class UserService {
         return userDAO.findByEmail(email).orElseThrow(()->new NotFoundException("Utente con email: " + email + " non trovato"));
     }
 
-    public UUID addCompanyToUser(User user, CompanyResponseDTO body){
-        Company found = companyDAO.findById(body.companyId()).orElseThrow(()->new NotFoundException(body.companyId()));
+    public UUID addCompanyToUser(User user, UUID companyId){
+        Company found = companyDAO.findById(companyId).orElseThrow(()->new NotFoundException(companyId));
         user.setCompany(found);
         userDAO.save(user);
         return user.getCompany().getCompanyId();

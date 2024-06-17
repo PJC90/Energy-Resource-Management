@@ -9,6 +9,10 @@ import dashboard.energy.repositories.DeviceDAO;
 import dashboard.energy.repositories.UserDAO;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,7 +23,10 @@ public class DeviceService {
     @Autowired
     private DeviceDAO deviceDAO;
 
-
+    public Page<Device> getAllDevice(int size, int page, String installation){
+        Pageable pageable = PageRequest.of(size, page, Sort.by(installation));
+        return deviceDAO.findAll(pageable);
+    }
     public Device saveDevice(User user, DeviceDTO body){
         Company company = user.getCompany();
         Device newDevice = new Device();

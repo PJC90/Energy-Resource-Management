@@ -6,6 +6,7 @@ import dashboard.energy.payloads.entitiesDTO.UserDTO;
 import dashboard.energy.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,8 +21,9 @@ public class UserController {
     private UserService userService;
 
     @PutMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
-    public UUID addCompanyToUser(@AuthenticationPrincipal User user, @RequestBody CompanyResponseDTO companyId){
+    public UUID addCompanyToUser(@AuthenticationPrincipal User user, @RequestBody UUID companyId){
         return userService.addCompanyToUser(user,companyId);
     }
     @GetMapping("/me")
