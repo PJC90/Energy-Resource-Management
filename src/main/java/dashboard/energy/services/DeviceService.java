@@ -4,6 +4,7 @@ import dashboard.energy.entities.Company;
 import dashboard.energy.entities.Device;
 import dashboard.energy.entities.User;
 import dashboard.energy.entities.enums.DeviceType;
+import dashboard.energy.exceptions.NotFoundException;
 import dashboard.energy.payloads.entitiesDTO.DeviceDTO;
 import dashboard.energy.repositories.DeviceDAO;
 import dashboard.energy.repositories.UserDAO;
@@ -23,8 +24,11 @@ public class DeviceService {
     @Autowired
     private DeviceDAO deviceDAO;
 
-    public Page<Device> getAllDevice(int size, int page, String installation){
-        Pageable pageable = PageRequest.of(size, page, Sort.by(installation));
+    public Device findById(UUID deviceId){
+        return deviceDAO.findById(deviceId).orElseThrow(()->new NotFoundException(deviceId));
+    }
+    public Page<Device> getAllDevice(int size, int page, String order){
+        Pageable pageable = PageRequest.of(size, page, Sort.by(order));
         return deviceDAO.findAll(pageable);
     }
     public Device saveDevice(User user, DeviceDTO body){
@@ -32,7 +36,7 @@ public class DeviceService {
         Device newDevice = new Device();
         newDevice.setDeviceNumber(body.deviceNumber());
         newDevice.setPlantAddress(body.plantAddress());
-        newDevice.setDeviceType(DeviceType.DOMESTIC);
+        newDevice.setDeviceType(body.deviceType());
         newDevice.setInstallation(LocalDate.now());
         newDevice.setConsumptionThreshold(1000);
         newDevice.setCompany(company);

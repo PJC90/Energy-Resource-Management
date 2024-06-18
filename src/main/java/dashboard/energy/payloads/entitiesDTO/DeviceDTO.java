@@ -12,6 +12,8 @@ public record DeviceDTO(
         String deviceNumber,
         @NotEmpty(message = "L'indirizzo è obbligatorio")
         @Size(min = 3, max = 60, message = "L'indirizzo deve avere minimo 3 caratteri, massimo 60")
-        String plantAddress
+        String plantAddress,
+        @NotNull(message = "Il tipo di dispositivo è un campo obbligatorio!")
+        DeviceType deviceType
 ) {
 }
