@@ -14,7 +14,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-@JsonIgnoreProperties({"company", "readings", "uninstallation"})
+@JsonIgnoreProperties({"company", "uninstallation"})
 public class Device {
     @Id
     @GeneratedValue
@@ -25,7 +25,6 @@ public class Device {
     private String plantAddress;
     private LocalDate installation;
     private LocalDate uninstallation;
-    private int consumptionThreshold;
     @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;

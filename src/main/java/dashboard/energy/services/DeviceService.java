@@ -27,9 +27,10 @@ public class DeviceService {
     public Device findById(UUID deviceId){
         return deviceDAO.findById(deviceId).orElseThrow(()->new NotFoundException(deviceId));
     }
-    public Page<Device> getAllDevice(int size, int page, String order){
+    public Page<Device> getMyAllDevice(int size, int page, String order, User user){
         Pageable pageable = PageRequest.of(size, page, Sort.by(order));
-        return deviceDAO.findAll(pageable);
+        Company company = user.getCompany();
+        return deviceDAO.findDeviceByCompany(company, pageable);
     }
     public Device saveDevice(User user, DeviceDTO body){
         Company company = user.getCompany();
@@ -38,7 +39,6 @@ public class DeviceService {
         newDevice.setPlantAddress(body.plantAddress());
         newDevice.setDeviceType(body.deviceType());
         newDevice.setInstallation(LocalDate.now());
-        newDevice.setConsumptionThreshold(1000);
         newDevice.setCompany(company);
         return deviceDAO.save(newDevice);
     }

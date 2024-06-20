@@ -28,8 +28,9 @@ public class DeviceController {
     @GetMapping
     public Page<Device> getAllDevice(@RequestParam(defaultValue = "0") int page,
                                      @RequestParam(defaultValue = "10") int size,
-                                     @RequestParam(defaultValue = "installation") String order){
-        return deviceService.getAllDevice(page, size, order);
+                                     @RequestParam(defaultValue = "installation") String order,
+                                     @AuthenticationPrincipal User user){
+        return deviceService.getMyAllDevice(page, size, order, user);
     }
     @GetMapping("/{deviceId}")
     @ResponseStatus(HttpStatus.OK)

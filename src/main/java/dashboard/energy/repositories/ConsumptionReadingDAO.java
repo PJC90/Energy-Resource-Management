@@ -14,4 +14,11 @@ import java.util.UUID;
 public interface ConsumptionReadingDAO extends JpaRepository<ConsumptionReading, UUID> {
     @Query("SELECT a.readingValue FROM ConsumptionReading a WHERE a.device = :device ORDER BY a.date DESC LIMIT 1")
     Optional<Long> getLastReading(@Param("device") Device device);
+
+    @Query("SELECT a.readingValue FROM ConsumptionReading a WHERE a.device.deviceId = :deviceId ORDER BY a.date DESC LIMIT 1")
+    Optional<Long> getLastReading(@Param("deviceId") UUID deviceId);
+    @Query("SELECT a.consumptionThreshold FROM ConsumptionReading a WHERE a.device.deviceId = :deviceId ORDER BY a.date DESC LIMIT 1")
+    Optional<Long> getLastConsumptionThreshold(@Param("deviceId") UUID deviceId);
+    @Query("SELECT cr FROM ConsumptionReading cr WHERE cr.device.deviceId = :deviceId ORDER BY cr.date DESC LIMIT 1")
+    Optional<ConsumptionReading> findLastReading(UUID deviceId);
 }
