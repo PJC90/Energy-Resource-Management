@@ -20,6 +20,8 @@ import java.util.UUID;
 @Service
 @EnableScheduling // configurazione di Spring x pianificare attività rilevando metodi annotati con @Scheduled in tutta l'applicazione
 public class ConsumptionReadingService {
+    private static final int maxEsecution = 10;
+    private int countEsecution = 0;
     @Autowired
     private ConsumptionReadingDAO consumptionReadingDAO;
     @Autowired
@@ -47,14 +49,23 @@ public class ConsumptionReadingService {
     }
     public void generateReadingAllDevice(){
         List<Device> devices = deviceDAO.findAll();
+        if(devices.isEmpty()){
+            return;
+        }
         for(Device device : devices){
             generateReading(device);
         }
     }
-//    @Scheduled(fixedRate = 60000) // Metodo pianificato che viene eseguito ogni 60 secondi generando automaticamente una nuova lettura del dispositivo.
-//    public void generateAutomaticallyReadings() {
-//        generateReadingAllDevice();
-//    }
+    @Scheduled(fixedRate = 2000) // Metodo pianificato che viene eseguito ogni 60 secondi generando automaticamente una nuova lettura del dispositivo.
+    public void generateAutomaticallyReadings() {
+        if(countEsecution < maxEsecution){
+            List<Device> devices = deviceDAO.findAll();
+            if(!devices.isEmpty()){
+                generateReadingAllDevice();
+                countEsecution ++;
+            }
+        }
+    }
 
     public List<ConsumptionReading> getAllReading(){
         return consumptionReadingDAO.findAll();
