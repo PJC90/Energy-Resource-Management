@@ -25,6 +25,7 @@ public class Device {
     private String plantAddress;
     private LocalDate installation;
     private LocalDate uninstallation;
+    private int allarmCount;
     @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;

@@ -40,6 +40,7 @@ public class DeviceService {
         newDevice.setDeviceType(body.deviceType());
         newDevice.setInstallation(LocalDate.now());
         newDevice.setCompany(company);
+        newDevice.setAllarmCount(0);
         return deviceDAO.save(newDevice);
     }
 }

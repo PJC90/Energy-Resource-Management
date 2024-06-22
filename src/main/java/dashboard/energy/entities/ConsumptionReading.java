@@ -22,6 +22,7 @@ public class ConsumptionReading {
     private long consumptionValue;
     private int temperature;
     private int consumptionThreshold;
+    private boolean allarmConsumption = false;
     @ManyToOne
     @JoinColumn(name = "device_id")
     private Device device;

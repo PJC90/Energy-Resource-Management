@@ -16,12 +16,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 @Service
 @EnableScheduling // configurazione di Spring x pianificare attività rilevando metodi annotati con @Scheduled in tutta l'applicazione
 public class ConsumptionReadingService {
     private static final int maxEsecution = 10;
-    private int countEsecution = 0;
+    private ConcurrentMap<UUID, Integer> deviceExecutionCount = new ConcurrentHashMap<>();
+
     @Autowired
     private ConsumptionReadingDAO consumptionReadingDAO;
     @Autowired
@@ -33,6 +36,7 @@ public class ConsumptionReadingService {
         long newReading = lastReading + rm.nextInt(4000);
         long consumption = newReading - lastReading;
         int temp = rm.nextInt(19, 40);
+        int lastConsThreshold = Math.toIntExact(consumptionReadingDAO.getLastConsumptionThreshold(device.getDeviceId()).orElse(3000L));
 
         ConsumptionReading consumptionReading= new ConsumptionReading();
         consumptionReading.setDevice(device);
@@ -40,9 +44,15 @@ public class ConsumptionReadingService {
         consumptionReading.setReadingValue(newReading);
         consumptionReading.setConsumptionValue(consumption);
         consumptionReading.setTemperature(temp);
-        consumptionReading.setConsumptionThreshold(3000);
-
+        consumptionReading.setConsumptionThreshold(lastConsThreshold);
+        if(consumptionReading.getConsumptionThreshold() < consumptionReading.getConsumptionValue()){
+            consumptionReading.setAllarmConsumption(true);
+           Device found = deviceDAO.findById(device.getDeviceId()).orElseThrow(()->new NotFoundException(device.getDeviceId()));
+           found.setAllarmCount(found.getAllarmCount() +1);
+           deviceDAO.save(found);
+        }
         consumptionReadingDAO.save(consumptionReading);
+
     }
     public Optional<Long> getLastReading(UUID deviceId){
         return consumptionReadingDAO.getLastReading(deviceId);
@@ -53,17 +63,19 @@ public class ConsumptionReadingService {
             return;
         }
         for(Device device : devices){
-            generateReading(device);
+            deviceExecutionCount.putIfAbsent(device.getDeviceId(),0);
+            int count = deviceExecutionCount.get(device.getDeviceId());
+            if(count < maxEsecution){
+                generateReading(device);
+                deviceExecutionCount.put(device.getDeviceId(), count +1);
+            }
         }
     }
-    @Scheduled(fixedRate = 2000) // Metodo pianificato che viene eseguito ogni 60 secondi generando automaticamente una nuova lettura del dispositivo.
+    @Scheduled(fixedRate = 4000) // Metodo pianificato che viene eseguito ogni 2 secondi generando automaticamente una nuova lettura del dispositivo.
     public void generateAutomaticallyReadings() {
-        if(countEsecution < maxEsecution){
             List<Device> devices = deviceDAO.findAll();
             if(!devices.isEmpty()){
                 generateReadingAllDevice();
-                countEsecution ++;
-            }
         }
     }
 
@@ -89,7 +101,13 @@ public class ConsumptionReadingService {
             newReading.setConsumptionValue(consumption);
             newReading.setTemperature(lastReading.getTemperature());
             newReading.setConsumptionThreshold(body.consumptionThreshold());
+            Device found = deviceDAO.findById(body.deviceId()).orElseThrow(()->new NotFoundException(body.deviceId()));
+            if(body.consumptionThreshold() < consumption){
+                newReading.setAllarmConsumption(true);
+                found.setAllarmCount(found.getAllarmCount() +1);
+            }
             consumptionReadingDAO.save(newReading);
+            deviceDAO.save(found);
         } else {
             throw new RuntimeException("Non ci sono letture sul dispositivo con id " + body.deviceId());
         }
