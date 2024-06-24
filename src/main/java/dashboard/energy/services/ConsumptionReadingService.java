@@ -22,13 +22,14 @@ import java.util.concurrent.ConcurrentMap;
 @Service
 @EnableScheduling // configurazione di Spring x pianificare attività rilevando metodi annotati con @Scheduled in tutta l'applicazione
 public class ConsumptionReadingService {
-    private static final int maxEsecution = 10;
+    private static final int maxEsecution = 20;
     private ConcurrentMap<UUID, Integer> deviceExecutionCount = new ConcurrentHashMap<>();
 
     @Autowired
     private ConsumptionReadingDAO consumptionReadingDAO;
     @Autowired
     private DeviceDAO deviceDAO;
+
 
     public void generateReading(Device device){
         Random rm = new Random();
@@ -52,7 +53,6 @@ public class ConsumptionReadingService {
            deviceDAO.save(found);
         }
         consumptionReadingDAO.save(consumptionReading);
-
     }
     public Optional<Long> getLastReading(UUID deviceId){
         return consumptionReadingDAO.getLastReading(deviceId);

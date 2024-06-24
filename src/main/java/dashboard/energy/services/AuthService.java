@@ -42,7 +42,7 @@ public class AuthService {
         newUser.setEmail(body.email());
         newUser.setPassword(passwordEncoder.encode(body.password()));
         newUser.setBirthday(body.birthday());
-        newUser.setAvatar("https://ui-avatars.com/api/?name=" + body.name() + "+" + body.surname() + "&background=E38F38&color=fff");
+        newUser.setAvatar("https://ui-avatars.com/api/?name=" + body.name() + "+" + body.surname() + "&background=0DCAF0&color=fff");
         newUser.setRole(Roles.USER);
         return userDAO.save(newUser);
     }

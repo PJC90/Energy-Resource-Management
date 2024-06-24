@@ -33,7 +33,7 @@ public class CompanyService {
         newCompany.setName(body.name());
         newCompany.setAddress(body.address());
         newCompany.setCompanyNumber(body.companyNumber());
-        newCompany.setLogo("https://ui-avatars.com/api/?name=" + body.name() + "&length=9&font-size=0.15" + "&background=e4ba8e&color=fff");
+        newCompany.setLogo("https://ui-avatars.com/api/?name=" + body.name() + "&length=9&font-size=0.15" + "&background=72e8ff&color=fff");
         Company company = companyDAO.save(newCompany);
         userService.addCompanyToUser(user, newCompany.getCompanyId());
         return company;
