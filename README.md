@@ -16,7 +16,7 @@ https://github.com/PJC90/EnergyResourceMenagement_FrontEnd
 
 ## Configuring the .env file
 
-Create a new file called .env.properties in the project root and define the environment variables as defined in the .env.example file.
+Create a new file called env.properties in the project root and define the environment variables as defined in the .env.example file.
 
 ## API Reference
 
