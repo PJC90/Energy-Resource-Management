@@ -33,8 +33,8 @@ public class AuthService {
     }
 
     public User save(UserDTO body){
-        userDAO.findByEmail(body.email()).ifPresent(user -> {throw new BadRequestException("email " + user.getEmail() + " già in uso...");});
-        userDAO.findByUsername(body.username()).ifPresent(user -> {throw new BadRequestException("username  " + user.getUsername() + " già in uso...");});
+        userDAO.findByEmail(body.email()).ifPresent(user -> {throw new BadRequestException("email: " + user.getEmail() + " già in uso...");});
+        userDAO.findByUsername(body.username()).ifPresent(user -> {throw new BadRequestException("username:  " + user.getUsername() + " già in uso...");});
         User newUser = new User();
         newUser.setName(body.name());
         newUser.setSurname(body.surname());
